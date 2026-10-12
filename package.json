@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.3.0",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "groq-sdk": "^1.6.0",
+    "multer": "^2.4.0",
+    "uuid": "^14.0.2"
+  }
+}

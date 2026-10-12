@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<title>Student Dashboard - SkillSync</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); 
+            min-height: 100vh; 
+            color: #e0e0e8;
+        }
+        .header { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; padding: 20px 0; 
+        }
+        .header-content { 
+            max-width: 1200px; margin: 0 auto; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .logo h1 { font-size: 1.8em; }
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .logout-btn { 
+            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); 
+            color: white; padding: 10px 20px; border-radius: 25px; cursor: pointer; 
+            transition: 0.3s;
+        }
+        .logout-btn:hover { 
+            background: rgba(255,255,255,0.2); 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+        .welcome { 
+            background: rgba(20, 20, 40, 0.8); 
+            padding: 30px; 
+            border-radius: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .skill-card { 
+            background: rgba(20, 20, 40, 0.8); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border-color: rgba(120, 119, 198, 0.4);
+        }
+        .skill-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        }
+        .skill-card.aptitude::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
+        .skill-card.technical::before { background: linear-gradient(90deg, #b91c1c, #dc2626); }
+        .skill-card.communication::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .skill-icon { font-size: 2em; margin-right: 15px; }
+        .skill-score { font-size: 2.5em; font-weight: bold; color: #e0e0e8; }
+        .score-bar { 
+            width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin: 15px 0; 
+        }
+        .score-fill { height: 100%; transition: width 0.8s ease; border-radius: 5px; }
+        .skill-card.aptitude .score-fill { background: linear-gradient(90deg, #dc2626, #ef4444); }
+        .skill-card.technical .score-fill { background: linear-gradient(90deg, #b91c1c, #dc2626); }
+        .skill-card.communication .score-fill { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .actions { 
+            background: rgba(20, 20, 40, 0.8); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .btn { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            transition: 0.3s; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px;
+        }
+        .btn:hover { 
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .btn.secondary { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+        }
+        .btn.secondary:hover { 
+             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .feedback { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; padding: 25px; border-radius: 20px; margin-bottom: 30px;
+        }
+        .jobs-section { 
+            background: rgba(20, 20, 40, 0.8); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .job-item { 
+            padding: 20px; 
+            border: 1px solid rgba(220, 38, 38, 0.2); 
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            transition: 0.3s;
+            background: rgba(25, 25, 45, 0.5);
+        }
+        .job-item:hover { 
+            border-color: #dc2626; 
+            background: rgba(220, 38, 38, 0.1);
+        }
+        .loading { text-align: center; padding: 40px; color: #a0a0c8; }
+        .stats { display: flex; gap: 20px; margin-top: 20px; }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-number { font-size: 1.5em; font-weight: bold; color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>📊 Student Dashboard</h1>
+            </div>
+            <div class="user-info">
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome">
+            <h2>Welcome back, <span id="userDisplayName">friend</span>! 🎯</h2>
+            <p>How's your skill journey going? Ready to crush some assessments and level up? Let's do this! 💪</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalScore">0</div>
+                    <div>Total Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="testsTaken">0</div>
+                    <div>Tests Taken</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="jobMatches">0</div>
+                    <div>Job Matches</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills-grid">
+            <div class="skill-card aptitude">
+                <div class="skill-header">
+                    <div>
+                        <span class="skill-icon">🧠</span>
+                        <h3>Aptitude</h3>
+                    </div>
+                    <div class="skill-score" id="aptitudeScore">0</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-fill" id="aptitudeFill" style="width: 0%"></div>
+                </div>
+                <p>Logical reasoning, problem-solving, and analytical thinking</p>
+            </div>
+
+            <div class="skill-card technical">
+                <div class="skill-header">
+                    <div>
+                        <span class="skill-icon">⚡</span>
+                        <h3>Technical</h3>
+                    </div>
+                    <div class="skill-score" id="technicalScore">0</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-fill" id="technicalFill" style="width: 0%"></div>
+                </div>
+                <p>Programming, system design, and technology knowledge</p>
+            </div>
+
+            <div class="skill-card communication">
+                <div class="skill-header">
+                    <div>
+                        <span class="skill-icon">💬</span>
+                        <h3>Communication</h3>
+                    </div>
+                    <div class="skill-score" id="communicationScore">0</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-fill" id="communicationFill" style="width: 0%"></div>
+                </div>
+                <p>Writing, presentation, and interpersonal skills</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <h3>🚀 Ready to level up?</h3>
+            <p style="margin: 10px 0;">Feeling confident? Let's see what you've got! Pick your challenge and show off those skills 😎</p>
+            <a href="/choose-test.html" class="btn">Take Skill Test 🎯</a>
+            <a href="/speech-test.html" class="btn secondary">Try Speech Assessment 🎤</a>
+            <!-- <button class="btn secondary" onclick="location.assign('/help.html')">Help Chat 💬</button> -->
+            <!-- <button class="btn secondary" onclick="refreshScores()">Check My Progress 📊</button> -->
+        </div>
+
+        <div class="feedback" id="feedbackSection" style="display: none;">
+            <h3>💬 Your Personal Coach Says:</h3>
+            <div id="feedbackText"></div>
+        </div>
+
+        <div class="jobs-section">
+            <h3>🎯 Jobs That Match Your Vibe</h3>
+            <div id="jobsList">
+                <div class="loading">🔍 Scouring the job market for perfect matches... This might take a sec!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userProfile = null;
+
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                const data = await response.json();
+                
+                if (data.id) {
+                    userProfile = data;
+                    updateUI();
+                    
+                    // Add a friendly greeting based on time of day
+                    const hour = new Date().getHours();
+                    let greeting = "How's it going";
+                    if (hour < 12) greeting = "Good morning";
+                    else if (hour < 18) greeting = "Good afternoon";
+                    else greeting = "Good evening";
+                    
+                    setTimeout(() => {
+                        const welcomeEl = document.querySelector('.welcome h2');
+                        if (welcomeEl && !welcomeEl.innerHTML.includes('Good')) {
+                            welcomeEl.innerHTML = `${greeting}, <span id="userDisplayName">${userProfile.name}</span>! 🎯`;
+                        }
+                    }, 1000);
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        function updateUI() {
+            if (!userProfile) return;
+
+            document.getElementById('userName').textContent = userProfile.name;
+            
+            // Update scores
+            const scores = userProfile.scores;
+            document.getElementById('aptitudeScore').textContent = scores.aptitude;
+            document.getElementById('technicalScore').textContent = scores.technical;
+            document.getElementById('communicationScore').textContent = scores.communication;
+
+            // Animate score bars
+            setTimeout(() => {
+                document.getElementById('aptitudeFill').style.width = scores.aptitude + '%';
+                document.getElementById('technicalFill').style.width = scores.technical + '%';
+                document.getElementById('communicationFill').style.width = scores.communication + '%';
+            }, 500);
+
+            // Update stats
+            const totalScore = scores.aptitude + scores.technical + scores.communication;
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('testsTaken').textContent = totalScore > 0 ? '1' : '0';
+
+            // Show feedback if available
+            if (userProfile.feedback) {
+                document.getElementById('feedbackSection').style.display = 'block';
+                document.getElementById('feedbackText').textContent = userProfile.feedback;
+            }
+        }
+
+        async function loadJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                const jobs = await response.json();
+                const jobsList = document.getElementById('jobsList');
+
+                if (jobs.length === 0) {
+                    jobsList.innerHTML = '<p>No jobs available at the moment. Check back later!</p>';
+                    return;
+                }
+
+                // Filter jobs based on user scores
+                const matchingJobs = jobs.filter(job => {
+                    const req = job.requirements || { aptitude: 0, technical: 0, communication: 0 };
+                    const userScores = userProfile?.scores || { aptitude: 0, technical: 0, communication: 0 };
+                    
+                    return userScores.aptitude >= req.aptitude && 
+                           userScores.technical >= req.technical && 
+                           userScores.communication >= req.communication;
+                });
+
+                document.getElementById('jobMatches').textContent = matchingJobs.length;
+
+                const jobsHTML = matchingJobs.map(job => `
+                    <div class="job-item">
+                        <h4>${job.title}</h4>
+                        <p><strong>${job.company}</strong></p>
+                        <p>${job.description}</p>
+                        <p><small>Requirements: Aptitude ${job.requirements?.aptitude || 0}+, 
+                           Technical ${job.requirements?.technical || 0}+, 
+                           Communication ${job.requirements?.communication || 0}+</small></p>
+                        <p><small>Posted: ${new Date(job.postedDate).toLocaleDateString()}</small></p>
+                    </div>
+                `).join('');
+
+                jobsList.innerHTML = jobsHTML || '<p>No jobs match your current skill level. Take the test to improve your scores!</p>';
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                document.getElementById('jobsList').innerHTML = '<p>Error loading jobs. Please try again later.</p>';
+            }
+        }
+
+        async function refreshScores() {
+            await loadProfile();
+            const btn = event.target;
+            btn.textContent = 'Refreshed!';
+            setTimeout(() => btn.textContent = 'Refresh Scores', 1000);
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = '/login.html';
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', () => {
+            loadProfile();
+            setTimeout(loadJobs, 1000);
+        });
+
+        // Add some nice animations
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.skill-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html> 

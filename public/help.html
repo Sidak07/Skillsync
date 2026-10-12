@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Help Chat - SkillSync</title>
+  <style>
+    body{ font-family:Segoe UI, sans-serif; background:#0f1724; color:#e6eef8; padding:20px }
+    .chat { max-width:720px; margin:20px auto; background:rgba(20,20,40,0.9); border-radius:12px; padding:20px }
+    .messages{ height:400px; overflow:auto; padding:10px; border-radius:8px; background:rgba(0,0,0,0.2); }
+    .msg { margin:8px 0; }
+    .msg.user { text-align:right }
+    .msg.bot { text-align:left }
+    .bubble{ display:inline-block; padding:10px 14px; border-radius:12px; max-width:80%; }
+    .bubble.user{ background:linear-gradient(90deg,#2563eb,#7c3aed); color:white }
+    .bubble.bot{ background:rgba(255,255,255,0.06); color:#e6eef8 }
+    .controls{ display:flex; gap:10px; margin-top:12px }
+    input[type=text]{ flex:1; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:inherit }
+    button{ padding:10px 14px; border-radius:10px; border:none; background:#ef4444; color:white; cursor:pointer }
+    .suggestions{ display:flex; gap:8px; margin:10px 0; flex-wrap:wrap }
+    .chip{ padding:8px 12px; background:rgba(255,255,255,0.04); border-radius:999px; cursor:pointer }
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <h2>Help Chat</h2>
+    <p>Ask quick questions about using SkillSync.</p>
+    <div class="messages" id="messages"></div>
+
+    <div class="suggestions">
+      <div class="chip" onclick="ask('How do I take a test')">How do I take a test</div>
+      <div class="chip" onclick="ask('How do I view my results')">How do I view my results</div>
+      <div class="chip" onclick="ask('What is this platform')">What is this platform</div>
+      <div class="chip" onclick="ask('How to improve technical skills')">Improve technical skills</div>
+    </div>
+
+    <div class="controls">
+      <input id="q" type="text" placeholder="Type a question..." />
+      <button onclick="send()">Ask</button>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://127.0.0.1:8001'; // python service runs here
+    const messagesEl = document.getElementById('messages');
+
+    function appendMsg(text, who='bot'){
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      const span = document.createElement('div');
+      span.className = 'bubble ' + who;
+      span.textContent = text;
+      div.appendChild(span);
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function ask(text){
+      document.getElementById('q').value = text;
+      await send();
+    }
+
+    async function send(){
+      const input = document.getElementById('q');
+      const q = input.value.trim();
+      if(!q) return;
+      appendMsg(q, 'user');
+      input.value = '';
+      appendMsg('Thinking...', 'bot');
+
+      try{
+        const res = await fetch(API + '/query', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ question: q }) });
+        const js = await res.json();
+        // remove the 'Thinking...' placeholder
+        const botMsgs = Array.from(messagesEl.querySelectorAll('.msg.bot'));
+        const last = botMsgs[botMsgs.length-1];
+        if (last) last.remove();
+        appendMsg(js.answer || 'Sorry, I could not answer that.', 'bot');
+      }catch(e){
+        console.error(e);
+        appendMsg('Help service unavailable. Make sure the Python help bot is running (see hackathon-mvp/python-help-bot).', 'bot');
+      }
+    }
+
+    // welcome message
+    appendMsg('Hi! I can answer a few quick questions about using SkillSync. Try the suggestions below.', 'bot');
+  </script>
+</body>
+</html>

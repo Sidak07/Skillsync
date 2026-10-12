@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Assessment Test - SkillSync</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); 
+            min-height: 100vh; 
+            color: #e0e0e8;
+        }
+        .header { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; padding: 20px 0; 
+        }
+        .header-content { 
+            max-width: 800px; margin: 0 auto; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .progress-bar { 
+            width: 200px; height: 8px; background: rgba(255,255,255,0.3); 
+            border-radius: 4px; overflow: hidden; 
+        }
+        .progress-fill { 
+            height: 100%; background: white; transition: width 0.3s ease; 
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
+        .test-card { 
+            background: rgba(20, 20, 40, 0.8); 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
+            margin-bottom: 30px;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .section-header { 
+            display: flex; align-items: center; gap: 15px; margin-bottom: 30px; 
+            padding-bottom: 20px; border-bottom: 2px solid rgba(120, 119, 198, 0.2); 
+        }
+        .section-icon { font-size: 2.5em; }
+        .question { margin-bottom: 30px; }
+        .question h3 { margin-bottom: 15px; color: #e0e0e8; line-height: 1.4; }
+        .options { display: grid; gap: 10px; }
+        .option { 
+            padding: 15px; 
+            border: 2px solid rgba(220, 38, 38, 0.2); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            background: rgba(25, 25, 45, 0.8);
+            color: #e0e0e8;
+        }
+        .option:hover { 
+            border-color: #dc2626; 
+            background: rgba(220, 38, 38, 0.1);
+            transform: translateY(-2px);
+        }
+        .option.selected { 
+            border-color: #dc2626; 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white;
+        }
+        .btn { 
+            padding: 15px 30px; 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-right: 10px;
+        }
+        .btn:hover { 
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .btn.secondary { 
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+        .btn.secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+        }
+        .btn:disabled { 
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); 
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .navigation { display: flex; justify-content: space-between; align-items: center; }
+        .results { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; padding: 40px; border-radius: 20px; text-align: center;
+        }
+        .score-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; margin: 30px 0; 
+        }
+        .score-item { 
+            background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; 
+        }
+        .score-number { font-size: 2.5em; font-weight: bold; margin-bottom: 5px; }
+        .timer { 
+            background: rgba(255,255,255,0.1); padding: 10px 15px; 
+            border-radius: 20px; font-weight: 600; 
+        }
+        .question-counter { font-size: 14px; color: rgba(255,255,255,0.8); }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { 
+            border: 4px solid #f3f3f3; border-top: 4px solid #667eea; 
+            border-radius: 50%; width: 50px; height: 50px; 
+            animation: spin 1s linear infinite; margin: 20px auto; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>📝 Let's Test Those Skills!</h1>
+                <div class="question-counter" id="questionCounter">Loading...</div>
+            </div>
+            <div>
+                <div class="timer" id="timer">15:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="testContainer">
+            </div>
+    </div>
+
+    <script>
+        // Local question bank (kept small for demo)
+        const QUESTION_BANK = {
+            aptitude: [
+                { q: 'What comes next in the sequence: 2, 6, 12, 20, 30, ?', opts: ['40','42','44','46'], c: 1 },
+                { q: 'If all roses are flowers and some flowers fade quickly, which statement must be true?', opts: ['All roses fade quickly','Some roses may fade quickly','No roses fade quickly','All flowers are roses'], c: 1 },
+                { q: 'A train travels 240 km in 3 hours. At the same speed, how far will it travel in 5 hours?', opts: ['360 km','400 km','420 km','480 km'], c: 1 },
+                { q: 'Which number is different from the others: 121, 144, 169, 196, 225?', opts: ['121','144','169','196'], c: 3 },
+                { q: 'If CODE is written as FRGH, how is HELLO written?', opts: ['KHOOR','MJQQT','NKRRU','GDKKN'], c: 0 },
+                { q: 'Find the odd one out: 7, 11, 15, 19, 23', opts: ['7','11','15','23'], c: 2 },
+                { q: 'Percentage: 30% of 250 is?', opts: ['50','60','70','75'], c: 1 },
+                { q: 'If x + 3 = 8, what is 2x + 5?', opts: ['13','12','16','11'], c: 0 },
+                { q: 'Complete the pair: Book is to Read as Knife is to ?', opts: ['Cut','Sharpen','Hold','Carry'], c: 0 },
+                { q: 'A bag contains 3 red and 2 blue balls; probability of drawing a red ball?', opts: ['2/5','3/5','1/2','3/2'], c: 1 }
+            ],
+            technical: [
+                { q: 'What is the time complexity of binary search?', opts: ['O(n)','O(log n)','O(n log n)','O(n²)'], c: 1 },
+                { q: 'In OOP, what does inheritance mean?', opts: ['Multiple objects','Class acquires properties/methods of another class','Hiding details','Type conversion'], c: 1 },
+                { q: 'Which data structure follows LIFO?', opts: ['Queue','Array','Stack','Linked List'], c: 2 },
+                { q: 'What does HTML stand for?', opts: ['Hyper Text Markup Language','High Tech Modern Language','Home Tool Markup Language','Hyperlink and Text Markup Language'], c: 0 },
+                { q: 'In a database, what is a PRIMARY KEY?', opts: ['Duplicate allowed','Uniquely identifies records','Can be null','Sorting only'], c: 1 },
+                { q: 'Which HTTP status code is returned when a resource is successfully created?', opts: ['200','201','202','404'], c: 1 },
+                { q: 'Which of the following is a NoSQL database?', opts: ['MySQL','PostgreSQL','MongoDB','SQLite'], c: 2 },
+                { q: 'Which command initializes a new Node.js project?', opts: ['npm start','npm init','node init','npm new'], c: 1 },
+                { q: 'What does CSS stand for?', opts: ['Cascading Style Sheets','Computer Style Syntax','Creative Style System','Coded Style Sheets'], c: 0 },
+                { q: 'What is REST in web development?', opts: ['A database','An architectural style for APIs','A CSS framework','A logging tool'], c: 1 },
+                { q: 'Which operator is used for strict equality in JavaScript?', opts: ['=','==','===','!='], c: 2 },
+                { q: 'Which of these is a front-end framework?', opts: ['Express','Django','React','Flask'], c: 2 },
+                { q: 'What does SQL stand for?', opts: ['Structured Query Language','Simple Query Language','Sequential Query List','Structured Quick Language'], c: 0 }
+            ],
+            communication: [
+                { q: 'Choose the sentence with correct grammar:', opts: ['Neither John nor Mary are coming','Neither John nor Mary is coming','Neither John or Mary is coming','Neither John and Mary are coming'], c: 1 },
+                { q: 'Best way to present a disagreement?', opts: ['Call others wrong','Wait after meeting','Offer respectful evidence-based view','Stay silent'], c: 2 },
+                { q: 'Best way to start a business email?', opts: ['Hey there!','To Whom It May Concern:','Dear [Name] / Hello [Name],','Greetings and salutations!'], c: 2 },
+                { q: "If you don't know an answer in a talk?", opts: ['Make up','Admit and follow up','Ignore','Bounce back to asker'], c: 1 },
+                { q: 'Best approach for constructive feedback?', opts: ['Only negatives','Positives - specifics - suggestions','Only when very wrong','Be vague'], c: 1 },
+                { q: 'Active listening primarily involves?', opts: ['Interrupting','Repeating everything back','Paying full attention and reflecting','Giving quick advice'], c: 2 },
+                { q: 'Effective body language does NOT include?', opts: ['Good eye contact','Closed arms','Open stance','Nodding to show understanding'], c: 1 },
+                { q: 'When delivering bad news professionally, you should?', opts: ['Be vague','Delay indefinitely','Be clear and offer next steps','Blame others'], c: 2 },
+                { q: 'A concise subject line in an email should be?', opts: ['Vague and long','Short and specific','Only emoji','Include full essay'], c: 1 },
+                { q: 'Which is best when clarifying requirements?', opts: ['Assume','Ask targeted questions','Wait until implementation','Start coding immediately'], c: 1 }
+            ]
+
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const testType = urlParams.get('type') || 'all';
+
+        function shuffle(arr){
+            for (let i=arr.length-1;i>0;i--){
+                const j = Math.floor(Math.random()*(i+1));
+                [arr[i],arr[j]]=[arr[j],arr[i]];
+            }
+        }
+
+        function sampleQuestions(type){
+            const pool = type === 'all'
+                ? [...QUESTION_BANK.aptitude, ...QUESTION_BANK.technical, ...QUESTION_BANK.communication]
+                : QUESTION_BANK[type].slice(0);
+            const count = type === 'all' ? 15 : 10;
+            shuffle(pool);
+            return pool.slice(0, Math.min(count, pool.length)).map(item => ({
+                section: type === 'all' ? (QUESTION_BANK.aptitude.includes(item) ? 'aptitude' : QUESTION_BANK.technical.includes(item) ? 'technical' : 'communication') : type,
+                question: item.q,
+                options: item.opts,
+                correct: item.c,
+                icon: type === 'aptitude' ? '🧠' : type === 'technical' ? '⚡' : '💬'
+            }));
+        }
+
+        let questions = sampleQuestions(testType);
+        if (testType === 'all' && questions.length < 15){
+            // fill with duplicates if pool small
+            while (questions.length < 15) questions.push(...sampleQuestions('aptitude').slice(0,1));
+        }
+
+        let currentQuestion = 0;
+        let answers = {};
+        let timeRemaining = 15 * 60;
+        let timerInterval;
+
+        function startTimer(){
+            timerInterval = setInterval(()=>{
+                timeRemaining--;
+                updateTimer();
+                if (timeRemaining <=0) finishTest();
+            },1000);
+        }
+
+        function updateTimer(){
+            const minutes = Math.floor(timeRemaining/60);
+            const seconds = timeRemaining%60;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            if (timeRemaining < 300) document.getElementById('timer').style.background='rgba(231,76,60,0.8)';
+        }
+
+        function renderQuestion(){
+            const q = questions[currentQuestion];
+            if (!q){
+                document.getElementById('testContainer').innerHTML = '<div class="loading"><div class="spinner"></div><h3>Preparing your test...</h3></div>';
+                return;
+            }
+            const isNewSection = currentQuestion===0 || questions[currentQuestion-1].section !== q.section;
+            let sectionHeader='';
+            if (isNewSection){
+                const title = q.section === 'aptitude' ? 'Aptitude & Reasoning' : q.section === 'technical' ? 'Technical Knowledge' : 'Communication Skills';
+                sectionHeader = `<div class="section-header"><div class="section-icon">${q.icon}</div><div><h2>${title}</h2><p>Test your ${q.section} abilities</p></div></div>`;
+            }
+
+            document.getElementById('testContainer').innerHTML = `
+                <div class="test-card">
+                    ${sectionHeader}
+                    <div class="question">
+                        <h3>${q.question}</h3>
+                        <div class="options">
+                            ${q.options.map((opt, idx)=>`<div class="option" data-option="${idx}" onclick="selectOption(${idx})">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="navigation">
+                        <div>
+                            <button class="btn secondary" onclick="previousQuestion()" ${currentQuestion===0?'disabled':''}>Previous</button>
+                            <button class="btn" onclick="nextQuestion()" ${currentQuestion===questions.length-1?'style="display:none;"':''}>Next</button>
+                            <button class="btn" onclick="finishTest()" ${currentQuestion!==questions.length-1?'style="display:none;"':''}>Finish Test</button>
+                        </div>
+                        <div><span>Question ${currentQuestion+1} of ${questions.length}</span></div>
+                    </div>
+                </div>
+            `;
+
+            // highlight selected
+            if (answers[currentQuestion]!==undefined){
+                const el = document.querySelector(`[data-option="${answers[currentQuestion]}"]`);
+                if (el) el.classList.add('selected');
+            }
+            document.getElementById('progressFill').style.width = `${((currentQuestion+1)/questions.length)*100}%`;
+            document.getElementById('questionCounter').textContent = `Question ${currentQuestion+1} of ${questions.length}`;
+        }
+
+        function selectOption(i){
+            answers[currentQuestion]=i;
+            document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+            const el = document.querySelector(`[data-option="${i}"]`);
+            if (el) el.classList.add('selected');
+        }
+
+        function nextQuestion(){ if (currentQuestion<questions.length-1){ currentQuestion++; renderQuestion(); } }
+        function previousQuestion(){ if (currentQuestion>0){ currentQuestion--; renderQuestion(); } }
+
+        async function finishTest(){
+            clearInterval(timerInterval);
+            const scores = { aptitude:0, technical:0, communication:0 };
+            const totals = { aptitude:0, technical:0, communication:0 };
+            questions.forEach((q,idx)=>{ totals[q.section]++; if (answers[idx]===q.correct) scores[q.section]++; });
+            Object.keys(scores).forEach(k=>{ scores[k] = totals[k] ? Math.round((scores[k]/totals[k])*100) : 0; });
+
+            document.getElementById('testContainer').innerHTML = `<div class="loading"><div class="spinner"></div><h3>Processing your results...</h3><p>Calculating scores and generating AI feedback</p></div>`;
+
+            try{
+                const resp = await fetch('/api/test-results',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ scores }) });
+                const result = await resp.json();
+                const feedback = result.feedback || 'Great job completing the assessment!';
+                showResults(scores, feedback);
+            }catch(e){ console.error(e); showResults(scores, 'Results processed locally.'); }
+        }
+
+        function showResults(scores, feedback){
+            // 🔥 THE FIX IS HERE: Set a flag in Local Storage right before redirecting.
+            // This flag tells student.html that the user just finished the test and should be allowed in.
+            localStorage.setItem('test_complete_token', 'true');
+            
+            document.getElementById('testContainer').innerHTML = `
+                <div class="results">
+                    <h2>🎉 Test Completed!</h2>
+                    <p>Awesome job finishing your skill assessment!</p>
+                    <div class="score-grid">
+                        <div class="score-item"><div class="score-number">${scores.aptitude}</div><div>Aptitude</div></div>
+                        <div class="score-item"><div class="score-number">${scores.technical}</div><div>Technical</div></div>
+                        <div class="score-item"><div class="score-number">${scores.communication}</div><div>Communication</div></div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h3>🤖 AI Feedback</h3>
+                        <p>${feedback}</p>
+                    </div>
+                    <button class="btn" onclick="location.assign('/student.html')" style="background:white;color:#667eea;margin-top:20px;">View Dashboard</button>
+                </div>
+            `;
+        }
+
+        window.addEventListener('load', ()=>{ renderQuestion(); startTimer(); });
+    </script>
+</body>
+</html>

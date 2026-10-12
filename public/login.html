@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSync - Login/Signup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .container { 
+            background: rgba(15, 15, 35, 0.95); 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(120, 119, 198, 0.1); 
+            width: 100%; 
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(120, 119, 198, 0.2);
+            transform: rotate(-0.5deg);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo h1 { 
+            color: #dc2626; 
+            font-size: 2.5em; 
+            margin-bottom: 5px; 
+            font-weight: 800;
+        }
+        .logo p { color: #a0a0c8; font-size: 0.9em; }
+        .tab-buttons { 
+            display: flex; 
+            margin-bottom: 30px; 
+            border-radius: 25px; 
+            background: rgba(20, 20, 40, 0.8); 
+            overflow: hidden;
+            border: 1px solid rgba(120, 119, 198, 0.2);
+        }
+        .tab-button { 
+            flex: 1; 
+            padding: 12px; 
+            border: none; 
+            background: transparent; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            color: #a0a0c8;
+            font-weight: 500;
+        }
+        .tab-button.active { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; 
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #e0e0e8; 
+            font-weight: 500; 
+        }
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border: 2px solid rgba(220, 38, 38, 0.2); 
+            border-radius: 12px; 
+            font-size: 16px; 
+            transition: 0.3s;
+            background: rgba(20, 20, 40, 0.8);
+            color: #e0e0e8;
+        }
+        .form-group input::placeholder, .form-group select::placeholder {
+            color: #a0a0c8;
+        }
+        .form-group input:focus, .form-group select:focus { 
+            border-color: #dc2626; 
+            outline: none; 
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2); 
+            background: rgba(25, 25, 45, 0.9);
+        }
+        .btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        .btn:hover { 
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .error { color: #ff6b6b; margin-top: 10px; font-size: 14px; }
+        .success { color: #51cf66; margin-top: 10px; font-size: 14px; }
+        .role-info { 
+            background: rgba(220, 38, 38, 0.1); 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            font-size: 14px; 
+            color: #a0a0c8;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        .role-info strong { color: #e0e0e8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>SkillSync</h1>
+            <p>Hey there! 👋 Ready to level up your career game?</p>
+        </div>
+        
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showTab('login')">Login</button>
+            <button class="tab-button" onclick="showTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" style="display: block;">
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div id="loginMessage"></div>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display: none;">
+            <div class="form-group">
+                <label for="signupName">Full Name:</label>
+                <input type="text" id="signupName" required>
+            </div>
+            <div class="form-group">
+                <label for="signupEmail">Email:</label>
+                <input type="email" id="signupEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password:</label>
+                <input type="password" id="signupPassword" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="signupRole">I am a:</label>
+                <select id="signupRole" required>
+                    <option value="">Select Role</option>
+                    <option value="student">Student - Looking for opportunities</option>
+                    <option value="recruiter">Recruiter - Hiring talent</option>
+                </select>
+            </div>
+            <div class="role-info">
+                <strong>Students:</strong> Take our fun skill tests, get personalized tips, and find your dream job! 🎯<br>
+                <strong>Recruiters:</strong> Post jobs, discover amazing talent, and skip the resume pile 📋
+            </div>
+            <button type="submit" class="btn">Create Account</button>
+            <div id="signupMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const buttons = document.querySelectorAll('.tab-button');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                buttons[0].classList.add('active');
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                buttons[1].classList.add('active');
+            }
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageEl = document.getElementById('loginMessage');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageEl.innerHTML = '<div class="success">Awesome! Welcome back! Taking you to your dashboard... 🚀</div>';
+                    setTimeout(() => {
+                        if (data.user.role === 'student') {
+                            window.location.href = '/student.html';
+                        } else {
+                            window.location.href = '/recruiter.html';
+                        }
+                    }, 1000);
+                } else {
+                    messageEl.innerHTML = `<div class="error">Oops! ${data.error} - Double check your credentials and try again 😅</div>`;
+                }
+            } catch (error) {
+                messageEl.innerHTML = '<div class="error">Hmm, something went wrong on our end. Mind trying again? 🤔</div>';
+            }
+        });
+
+        // Signup form handler
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const role = document.getElementById('signupRole').value;
+            const messageEl = document.getElementById('signupMessage');
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageEl.innerHTML = '<div class="success">Welcome aboard! 🎉 Setting up your account and taking you to your new dashboard...</div>';
+                    setTimeout(() => {
+                        if (data.user.role === 'student') {
+                            window.location.href = '/student.html';
+                        } else {
+                            window.location.href = '/recruiter.html';
+                        }
+                    }, 1000);
+                } else {
+                    messageEl.innerHTML = `<div class="error">Hmm, looks like ${data.error.toLowerCase()}. Give it another shot! 😊</div>`;
+                }
+            } catch (error) {
+                messageEl.innerHTML = '<div class="error">Oops! Our servers are being a bit grumpy today. Try again in a sec? 🙃</div>';
+            }
+        });
+
+        // Demo accounts info - made more casual
+        // setTimeout(() => {
+        //     const info = document.createElement('div');
+        //     info.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: rgba(120,119,198,0.9); color: white; padding: 15px; border-radius: 12px; font-size: 12px; max-width: 300px; border: 1px solid rgba(120,119,198,0.3);';
+        //     info.innerHTML = `
+        //         <strong>💡 Quick peek!</strong><br>
+        //         Want to try it out? Use these:<br>
+        //         👨‍🎓 student@demo.com / password123<br>
+        //         👔 recruiter@demo.com / password123<br>
+        //         <small style="opacity:0.8">(Feel free to explore!)</small>
+        //     `;
+        //     document.body.appendChild(info);
+        //     setTimeout(() => info.remove(), 12000);
+        // }, 3000);
+    </script>
+</body>
+</html>

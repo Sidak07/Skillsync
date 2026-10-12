@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Speech Assessment - SkillSync</title>
+  <style>
+    body{font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);color:#e0e0e8;margin:0;min-height:100vh}
+    .wrap{max-width:900px;margin:0 auto;padding:32px}
+    .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .brand{font-weight:800;letter-spacing:.5px}
+    .brand span{color:#dc2626}
+    .card{background:rgba(20,20,40,0.8);border:1px solid rgba(220,38,38,0.2);border-radius:20px;padding:24px;margin-bottom:16px;backdrop-filter:blur(10px);box-shadow:0 8px 25px rgba(0,0,0,0.3)}
+    .row{display:flex;gap:16px;flex-wrap:wrap}
+    .btn{display:inline-block;background:linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);color:white;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:700;border:none;cursor:pointer;transition:0.3s}
+    .btn:hover{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%)}
+    .btn.secondary{background:linear-gradient(135deg, #ef4444 0%, #f87171 100%)}
+    .btn.secondary:hover{background:linear-gradient(135deg, #f87171 0%, #fca5a5 100%)}
+    .btn.ghost{background:transparent;border:1px solid rgba(220,38,38,0.3);color:#a0a0c8}
+    .btn.ghost:hover{border-color:#dc2626;color:#e0e0e8;background:rgba(220,38,38,0.1)}
+    .muted{color:#a0a0c8;font-size:14px}
+    .mono{font-family:Consolas,Menlo,Monaco,monospace;background:rgba(25,25,45,0.8);border:1px solid rgba(220,38,38,0.2);border-radius:12px;padding:16px;white-space:pre-wrap;color:#e0e0e8}
+    audio{width:100%}
+    textarea{width:100%;min-height:120px;border-radius:12px;border:1px solid rgba(220,38,38,0.2);background:rgba(25,25,45,0.8);color:#e0e0e8;padding:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hdr">
+      <div class="brand">Skill<span>Sync</span> · Speech Assessment</div>
+      <a class="btn" href="/student.html">Back</a>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">🎙️ Let's Hear Your Voice!</h2>
+      <p class="muted">Pick a topic that interests you, hit record, and let's see how you communicate! We'll give you honest feedback on your speaking skills.</p>
+      <div class="row" style="margin-top:12px; gap:12px; align-items:center; flex-wrap:wrap;">
+        <label class="muted">Role:</label>
+        <select id="roleSelect" style="min-width:180px; border-radius:8px; padding:8px; background:#0b0e23; color:#e9eaff; border:1px solid #232759">
+          <option value="general">General</option>
+          <option value="sde">SDE / Software</option>
+          <option value="data">Data / Analytics</option>
+          <option value="marketing">Marketing / Communication</option>
+        </select>
+        <label class="muted">Prompt:</label>
+        <select id="promptSelect" style="flex:1; min-width:240px; border-radius:8px; padding:8px; background:#0b0e23; color:#e9eaff; border:1px solid #232759"></select>
+        <button id="newPromptBtn" class="btn ghost" title="Next">↻ New</button>
+        <label class="muted">Duration:</label>
+        <select id="durationSelect" style="min-width:100px; border-radius:8px; padding:8px; background:#0b0e23; color:#e9eaff; border:1px solid #232759">
+          <option value="30">30s</option>
+          <option value="45" selected>45s</option>
+          <option value="60">60s</option>
+        </select>
+        <label class="muted"><input id="autoAnalyzeChk" type="checkbox" style="margin-right:6px">Auto analyze after stop</label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button id="recordBtn" class="btn">● Record</button>
+        <button id="stopBtn" class="btn ghost" disabled>■ Stop</button>
+        <button id="playBtn" class="btn ghost" disabled>▶ Play</button>
+        <button id="submitBtn" class="btn secondary" disabled>Analyze</button>
+        <button id="browserSttBtn" class="btn ghost" title="Use browser speech recognition (no API)">🎤 Use Browser Transcription</button>
+      </div>
+      <div id="timer" class="muted" style="margin-top:8px">00:45</div>
+      <div id="playerWrap" style="margin-top:12px;display:none">
+        <audio id="player" controls></audio>
+      </div>
+      <!-- <div id="healthBanner" class="muted" style="margin-top:8px; display:none">OpenAI not configured: using browser transcription fallback. Results depend on your browser.</div> -->
+    </div>
+
+    <div class="card">
+      <h3>Transcript</h3>
+      <textarea id="transcript" placeholder="The transcript will appear here after analysis (server-side). You can also paste text to re-analyze without re-recording."></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost" onclick="analyzeTextOnly()">Analyze Pasted Text</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>JSON Output</h3>
+      <div id="jsonOut" class="mono">{"status":"waiting"}</div>
+    </div>
+  </div>
+
+  <script>
+    let mediaRecorder; let chunks=[]; let blob; let timerInterval; let seconds=0;
+
+    const PROMPTS = {
+      general: [
+        'Where do you see yourself in five years?',
+        'What are your strengths and weaknesses?',
+        'Describe a time you resolved a conflict in a team.',
+        'Give a 30-second elevator pitch about yourself.',
+        'Explain a complex topic to a non-technical audience.'
+      ],
+      sde: [
+        'Describe a challenging bug you fixed and how you approached it.',
+        'Explain a system you designed and the trade-offs you made.',
+        'How do you ensure code quality and reliability under deadlines?',
+        'Explain a complex CS concept (e.g., CAP theorem) in simple terms.',
+        'Tell me about a time you improved performance in an application.'
+      ],
+      data: [
+        'Walk me through a data project from problem to insights.',
+        'How do you handle missing or noisy data?',
+        'Explain precision vs recall and when to favor each.',
+        'Describe a time your analysis influenced a business decision.',
+        'Explain a model’s results to a non-technical stakeholder.'
+      ],
+      marketing: [
+        'Pitch a new product in 30 seconds to a broad audience.',
+        'Describe a campaign you’d run with limited budget and why.',
+        'How would you handle a PR issue on social media?',
+        'Tell me about a time your messaging increased engagement.',
+        'Explain brand voice and how you adapt it to different channels.'
+      ]
+    };
+
+    function populatePromptOptions(role){
+      const select = document.getElementById('promptSelect');
+      select.innerHTML = '';
+      PROMPTS[role].forEach((p, idx)=>{
+        const opt = document.createElement('option');
+        opt.value = role + '_' + idx;
+        opt.textContent = p;
+        select.appendChild(opt);
+      });
+      select.selectedIndex = 0;
+    }
+
+    function currentRole(){ return document.getElementById('roleSelect').value || 'general'; }
+
+    function randomPrompt(){
+      const role = currentRole();
+      const arr = PROMPTS[role] || PROMPTS.general;
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    function syncPromptSelect(){ /* kept for future hook if needed */ }
+
+    function formatTime(s){const m=Math.floor(s/60).toString().padStart(2,'0');const ss=(s%60).toString().padStart(2,'0');return `${m}:${ss}`}
+
+    function maxSeconds(){ return parseInt(document.getElementById('durationSelect').value || '45', 10); }
+
+    async function startRecording(){
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder = new MediaRecorder(stream);
+      chunks = [];
+      mediaRecorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+      mediaRecorder.onstop = async () => {
+        blob = new Blob(chunks, {type:'audio/webm'});
+        document.getElementById('playerWrap').style.display = 'block';
+        document.getElementById('player').src = URL.createObjectURL(blob);
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('playBtn').disabled = false;
+        if (document.getElementById('autoAnalyzeChk').checked) {
+          // slight delay to ensure blob assignment is ready
+          setTimeout(()=>{ analyze(); }, 100);
+        }
+      };
+      mediaRecorder.start();
+      seconds = maxSeconds();
+      document.getElementById('timer').textContent = formatTime(seconds);
+      clearInterval(timerInterval);
+      timerInterval = setInterval(()=>{
+        seconds--; document.getElementById('timer').textContent = formatTime(Math.max(0, seconds));
+        if (seconds<=0){ stopRecording(); }
+      },1000);
+      document.getElementById('recordBtn').disabled=true;
+      document.getElementById('stopBtn').disabled=false;
+    }
+
+    function stopRecording(){
+      try { if(mediaRecorder && mediaRecorder.state!== 'inactive') mediaRecorder.stop(); } catch(e){}
+      clearInterval(timerInterval);
+      document.getElementById('recordBtn').disabled=false;
+      document.getElementById('stopBtn').disabled=true;
+    }
+
+    async function analyze(){
+      if(!blob){ alert('Please record audio first'); return; }
+      const fd = new FormData();
+      fd.append('audio', blob, 'answer.webm');
+      // Step 1: Transcribe
+      const tRes = await fetch('/api/speech-transcribe', { method:'POST', body: fd });
+      const tJson = await tRes.json();
+      if (tJson.transcript) document.getElementById('transcript').value = tJson.transcript;
+      // Step 2: Evaluate text with STRICT JSON
+      const eRes = await fetch('/api/text-evaluate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ transcript: tJson.transcript || '' }) });
+      const eJson = await eRes.json();
+      document.getElementById('jsonOut').textContent = JSON.stringify(eJson, null, 2);
+    }
+
+    async function analyzeTextOnly(){
+      const text = document.getElementById('transcript').value.trim();
+      if(!text){ alert('Paste transcript text first'); return; }
+      const res = await fetch('/api/text-evaluate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ transcript:text }) });
+      const json = await res.json();
+      document.getElementById('jsonOut').textContent = JSON.stringify(json, null, 2);
+    }
+
+    // Browser-based STT (fallback if no OpenAI key)
+    function browserSTT(){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { alert('Browser speech recognition not supported here. Use Chrome desktop.'); return; }
+      const rec = new SR();
+      rec.lang = 'en-US';
+      rec.interimResults = true;
+      let finalText = '';
+      document.getElementById('transcript').value='';
+      rec.onresult = (e)=>{
+        let interim='';
+        for(let i=e.resultIndex;i<e.results.length;i++){
+          const trans = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += trans + ' ';
+          else interim += trans;
+        }
+        document.getElementById('transcript').value = (finalText + ' ' + interim).trim();
+      };
+      rec.onerror = ()=>{ rec.stop(); };
+      rec.onend = async ()=>{
+        const text = document.getElementById('transcript').value.trim();
+        if (text) { await analyzeTextOnly(); }
+      };
+      rec.start();
+    }
+
+    // Health check to show banner if no OpenAI
+    async function checkHealth(){
+      try{ const r = await fetch('/api/health'); const j = await r.json(); if (!j.openai){ document.getElementById('healthBanner').style.display='block'; } }catch{}
+    }
+
+    document.getElementById('recordBtn').addEventListener('click', startRecording);
+    document.getElementById('stopBtn').addEventListener('click', stopRecording);
+    document.getElementById('submitBtn').addEventListener('click', analyze);
+    document.getElementById('playBtn').addEventListener('click', ()=>{ const p=document.getElementById('player'); p.play(); });
+    document.getElementById('newPromptBtn').addEventListener('click', ()=>{
+      const role = currentRole();
+      const arr = PROMPTS[role] || PROMPTS.general;
+      const select = document.getElementById('promptSelect');
+      const idx = Math.floor(Math.random()*arr.length);
+      select.selectedIndex = idx;
+    });
+    document.getElementById('browserSttBtn').addEventListener('click', browserSTT);
+    document.getElementById('promptSelect').addEventListener('change', syncPromptSelect);
+    document.getElementById('roleSelect').addEventListener('change', ()=>{ populatePromptOptions(currentRole()); });
+    // initial
+    populatePromptOptions('general');
+    checkHealth();
+  </script>
+</body>
+</html>

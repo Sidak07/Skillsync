@@ -1,0 +1,375 @@
+{
+  "users": [
+    {
+      "id": "7f314d84-0dda-42ac-96ba-d648982e7f51",
+      "name": "Alex Johnson",
+      "email": "student@demo.com",
+      "password": "$2b$10$UagZ2l1/DeVD.0xPD7Z/MOSuZWoJPdgx8qpO/CdQJ/qQ2M7P2bNOO",
+      "role": "student",
+      "scores": {
+        "aptitude": 85,
+        "technical": 78,
+        "communication": 92
+      },
+      "feedback": "Excellent communication skills! Consider strengthening your technical knowledge with some advanced programming courses. Your logical reasoning is very strong - keep building on that foundation.",
+      "createdAt": "2025-10-07T14:51:27.587Z"
+    },
+    {
+      "id": "f90e6a93-0944-4253-9d6d-694a0cc78fbe",
+      "name": "Sarah Wilson",
+      "email": "recruiter@demo.com",
+      "password": "$2b$10$gW5GxZEUV6NHdi8pGClzuuN.adpEpyyvAYKlUvqO9A9TFH7n7pqYa",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-07T14:51:27.664Z"
+    },
+    {
+      "id": "512729c3-9226-47af-add7-e20e8413fc64",
+      "name": "Mike Chen",
+      "email": "mike@example.com",
+      "password": "$2b$10$GVpvWxktc7l.rRUazIzuTu/Gzb5Rol0Uro0b6tscNrnrWC1UfHHNy",
+      "role": "student",
+      "scores": {
+        "aptitude": 72,
+        "technical": 95,
+        "communication": 68
+      },
+      "feedback": "Outstanding technical skills! Focus on improving communication abilities for better team collaboration.",
+      "createdAt": "2025-10-07T14:51:27.738Z"
+    },
+    {
+      "id": "73180c35-b0e8-420b-a111-505cb003641e",
+      "name": "Emma Davis",
+      "email": "emma@example.com",
+      "password": "$2b$10$JtZ2KOKB8s59PYwySmyRlOBUaz3JZyfFpYOg2AATUz.R4DHR12.qW",
+      "role": "student",
+      "scores": {
+        "aptitude": 88,
+        "technical": 82,
+        "communication": 90
+      },
+      "feedback": "Well-rounded skillset with strong performance across all areas. You're ready for leadership roles!",
+      "createdAt": "2025-10-07T14:51:27.810Z"
+    },
+    {
+      "id": "b1259bd5-dcf0-4033-9cac-f7cc82f622d7",
+      "name": "s",
+      "email": "sss@gmail.com",
+      "password": "$2b$10$HRBUlMEJoEB0A.AhQhhG4.09ZrSAVbI45113e0fyFYWhiencVuzyO",
+      "role": "student",
+      "scores": {
+        "aptitude": 20,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "Great job on completing the assessment! Keep practicing to improve your skills.",
+      "createdAt": "2025-10-07T14:53:09.462Z",
+      "lastTestDate": "2025-10-07T14:54:07.845Z"
+    },
+    {
+      "id": "5ac62587-624a-4836-b1f4-d1fb4e7d9889",
+      "name": "po",
+      "email": "i@gmail.com",
+      "password": "$2b$10$ASiIK8Wzi19tjWa3hlkvk.a/Dhumn8MXbdggiIdo.Y76nd404cxVq",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-07T14:55:46.346Z"
+    },
+    {
+      "id": "ca6b1f41-8252-4dab-99d7-c357f6528cf1",
+      "name": "abc",
+      "email": "abc@gmail.com",
+      "password": "$2b$10$uV6.7cbI8nG8r8FxiivpneTiglubJci.wWdh3m9U.SmfYfWVmrMCu",
+      "role": "student",
+      "scores": {
+        "aptitude": 0,
+        "technical": 10,
+        "communication": 0
+      },
+      "feedback": "Great job on completing the assessment! Keep practicing to improve your skills.",
+      "createdAt": "2025-10-07T16:16:00.351Z",
+      "lastTestDate": "2025-10-08T03:52:04.023Z"
+    },
+    {
+      "id": "0395dbaa-dda5-4e78-b1ad-bc6c7d51a0dc",
+      "name": "po",
+      "email": "p@gmail.com",
+      "password": "$2b$10$wdbZpYXhYfAx20jBFXUjiOmdu8ZHGfGy.P7RjfKAxoOvhrp6Si.w6",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-07T16:53:36.550Z"
+    },
+    {
+      "id": "a68881fc-a06f-4890-bde0-34dbd43dea46",
+      "name": "DJ Bhoi",
+      "email": "djdj1@gmail.com",
+      "password": "$2b$10$7P0UJ5fmgXH247JvbGg7a.Mn1mEnMN2v/.JrDoSW2m4EzvbAQg0s2",
+      "role": "student",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-07T17:49:13.620Z"
+    },
+    {
+      "id": "28f80cc5-d97a-49b2-b046-059c950283f1",
+      "name": "dfg",
+      "email": "dfg@gmail.com",
+      "password": "$2b$10$xQ22MgHiPj24ZZ5DNg4asOKdlOuCDucTLvhEo5/2HT5yTrxW5idGe",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-07T20:18:44.665Z"
+    },
+    {
+      "id": "05a1e906-1398-4807-8923-b81e4d83c370",
+      "name": "Ravi",
+      "email": "ravi@gmail.com",
+      "password": "$2b$10$nL5b8xD.c/NPUxbUvBIfNePPilmv9EFtBzOy9ifTz/FkJpEa88dxq",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-08T02:17:36.402Z"
+    },
+    {
+      "id": "24560b2a-36b0-445b-8ac4-41f37172adbb",
+      "name": "Raju",
+      "email": "raju@gmail.com",
+      "password": "$2b$10$5mFXD0YrCE8X69Z4JtX.cuwXe0oDSo9ltjyexk1JoLi5gYbUl33PK",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-08T02:40:54.324Z"
+    },
+    {
+      "id": "4b6bcba0-1215-41ad-abda-c965597c2c7f",
+      "name": "Verra",
+      "email": "verra@gmaill.com",
+      "password": "$2b$10$PoLib/msRKafcQ1X02ezfO4fdPp1McKQJqi4IenNC/qmjGUZZyrRW",
+      "role": "recruiter",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-08T02:51:23.831Z"
+    },
+    {
+      "id": "972a4233-6ba9-46e5-bc0e-46cd46a24b3c",
+      "name": "Akriti",
+      "email": "akriti@gmail.com",
+      "password": "$2b$10$yXwNnntBr5g0lb9PwnJ/zOAtx6dJ11NXFKFfO.srETjEtBj14iqMO",
+      "role": "student",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-08T02:58:58.500Z"
+    },
+    {
+      "id": "403bf57b-34e8-43df-a265-760ab1c5bb36",
+      "name": "ksha",
+      "email": "praveeksha@gmail.com",
+      "password": "$2b$10$6uiiz1HQlDUR0LsUZErjy.wT5sWeZZOEEJ7p/UJlNj8SpejCkMTKW",
+      "role": "student",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2025-10-08T03:54:13.336Z"
+    },
+    {
+      "id": "b8661197-57ef-42bb-842e-26cf7e9963eb",
+      "name": "Akriti",
+      "email": "badgirl@gmail.com",
+      "password": "$2b$10$JGuWjpYpuarv/TjkEEQvcewxJWYYs1awfCe17TDxAsyB05u5FivYa",
+      "role": "student",
+      "scores": {
+        "aptitude": 10,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "Great job on completing the assessment! Keep practicing to improve your skills.",
+      "createdAt": "2025-10-29T03:44:37.513Z",
+      "lastTestDate": "2025-10-29T03:45:33.627Z"
+    },
+    {
+      "id": "6b8ba608-3082-4e25-a9c8-b5ff1a0c7935",
+      "name": "sidak kaur",
+      "email": "www.kaur.s07@gmail.com",
+      "password": "$2b$10$8SOFpD9o0W8L24im7v0AcePNNpQxL2uN6pjpK3WQ3WzZbCVsZdiOe",
+      "role": "student",
+      "scores": {
+        "aptitude": 40,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "**Overall Performance Summary**  \nYour current assessment indicates a need for development across all measured domains—aptitude, technical ability, and communication. While the scores are low, they provide a clear baseline from which you can measure progress. Recognizing this starting point is the first step toward meaningful growth.\n\n**Strengths**  \n- **Motivation to Assess:** You have taken the initiative to complete an assessment, which shows willingness to self‑evaluate and improve.  \n- **Potential for Growth:** Low scores simply mean there is ample room to build skills; you are not limited by any fixed ceiling.\n\n**Areas for Improvement**  \n1. **General Aptitude (Problem‑Solving, Logical Reasoning):** Strengthen foundational reasoning and analytical skills.  \n2. **Technical Skills:** Acquire basic competencies in a relevant tool or discipline (e.g., computer literacy, spreadsheet use, coding basics).  \n3. **Communication:** Develop clear written and verbal expression, active listening, and presentation abilities.\n\n**Practical Suggestions**  \n\n| Goal | Action Steps | Resources (Free/Low‑Cost) |\n|------|--------------|---------------------------|\n| Boost logical reasoning | • Solve a daily puzzle (Sudoku, logic grids). <br>",
+      "createdAt": "2026-08-23T07:52:36.066Z",
+      "lastTestDate": "2026-10-09T16:52:11.674Z"
+    },
+    {
+      "id": "88169cae-069d-4c65-8e12-9a7a4808482f",
+      "name": "Sidak",
+      "email": "www.sidakkaur154@gmail.com",
+      "password": "$2b$10$ZYRMFjI5KJkls1dNtNhXn.bs6fRvY3pHyytrrScNbBgdSkWBIBdIC",
+      "role": "student",
+      "scores": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "feedback": "",
+      "createdAt": "2026-09-26T05:29:27.410Z"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1afb64e6-8293-433c-b68b-a3d4b0c5d677",
+      "title": "Software Developer",
+      "company": "TechStart Inc.",
+      "description": "Join our dynamic team building cutting-edge web applications. We're looking for passionate developers who love clean code and innovative solutions.",
+      "requirements": {
+        "aptitude": 70,
+        "technical": 80,
+        "communication": 60
+      },
+      "recruiterId": "f90e6a93-0944-4253-9d6d-694a0cc78fbe",
+      "postedDate": "2025-10-07T14:51:27.810Z",
+      "status": "active"
+    },
+    {
+      "id": "cf5c9f9a-cb26-4c35-8fcf-fea56cd8deba",
+      "title": "Junior Data Analyst",
+      "company": "DataViz Corp",
+      "description": "Perfect entry-level position for recent graduates. Help us analyze data trends and create meaningful insights for our clients.",
+      "requirements": {
+        "aptitude": 75,
+        "technical": 65,
+        "communication": 70
+      },
+      "recruiterId": "f90e6a93-0944-4253-9d6d-694a0cc78fbe",
+      "postedDate": "2025-10-07T14:51:27.810Z",
+      "status": "active"
+    },
+    {
+      "id": "d257b97e-ff07-41b7-b0b3-d8fc1e200aa1",
+      "title": "Marketing Coordinator",
+      "company": "Creative Solutions",
+      "description": "Join our marketing team! We need someone with great communication skills and creative thinking to help grow our brand.",
+      "requirements": {
+        "aptitude": 65,
+        "technical": 40,
+        "communication": 85
+      },
+      "recruiterId": "f90e6a93-0944-4253-9d6d-694a0cc78fbe",
+      "postedDate": "2025-10-07T14:51:27.810Z",
+      "status": "active"
+    },
+    {
+      "id": "bb9fef64-ff3d-4958-bbc9-ff5eb162dd7f",
+      "title": "Software engineer",
+      "company": "MaddyByaan.mongodb",
+      "description": "communication",
+      "requirements": {
+        "aptitude": 0,
+        "technical": 40,
+        "communication": 50
+      },
+      "recruiterId": "0395dbaa-dda5-4e78-b1ad-bc6c7d51a0dc",
+      "postedDate": "2025-10-07T16:54:27.352Z",
+      "status": "active"
+    },
+    {
+      "id": "4160ef2a-118a-4819-b080-5fa31578f532",
+      "title": "Marketing",
+      "company": "limited ",
+      "description": "Marketing",
+      "requirements": {
+        "aptitude": 50,
+        "technical": 50,
+        "communication": 50
+      },
+      "recruiterId": "28f80cc5-d97a-49b2-b046-059c950283f1",
+      "postedDate": "2025-10-07T20:19:39.739Z",
+      "status": "active"
+    },
+    {
+      "id": "7eca7e5a-75cc-4dac-bd6e-e873f60aeca4",
+      "title": "Makerting",
+      "company": "IT limited",
+      "description": "Marketing",
+      "requirements": {
+        "aptitude": 0,
+        "technical": 50,
+        "communication": 50
+      },
+      "recruiterId": "05a1e906-1398-4807-8923-b81e4d83c370",
+      "postedDate": "2025-10-08T02:19:09.253Z",
+      "status": "active"
+    },
+    {
+      "id": "325c91a1-83b4-42cf-bfeb-05e2bd25f719",
+      "title": "Software Developer ",
+      "company": "IT limited",
+      "description": "Software Developer",
+      "requirements": {
+        "aptitude": 0,
+        "technical": 50,
+        "communication": 50
+      },
+      "recruiterId": "24560b2a-36b0-445b-8ac4-41f37172adbb",
+      "postedDate": "2025-10-08T02:45:02.479Z",
+      "status": "active"
+    },
+    {
+      "id": "d59db7da-f7b8-4d58-b05f-949fa7fbc769",
+      "title": "IT",
+      "company": "IT limited",
+      "description": "IT",
+      "requirements": {
+        "aptitude": 0,
+        "technical": 0,
+        "communication": 0
+      },
+      "recruiterId": "24560b2a-36b0-445b-8ac4-41f37172adbb",
+      "postedDate": "2025-10-08T02:50:27.392Z",
+      "status": "active"
+    }
+  ],
+  "tests": []
+}
